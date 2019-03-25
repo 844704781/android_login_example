@@ -13,18 +13,13 @@ import java.util.Map;
 
 public class UserInfoUtils {
 
-    private static String userInfoPath = "/data/data/com.watermelon.login_example/user_info.txt";
 
     public static void writeUserInfo(Context context,String username, String password) {
 
-        File file;
         FileOutputStream fileOutputStream;
         try {
             String result = username + "##" + password;
-
-            String path=context.getFilesDir().getPath();
-            file = new File(path,"user_info.txt");
-            fileOutputStream = new FileOutputStream(file);
+            fileOutputStream=context.openFileOutput("info.txt",0);
             fileOutputStream.write(result.getBytes());
             fileOutputStream.close();
         } catch (Exception e) {
@@ -33,31 +28,27 @@ public class UserInfoUtils {
         }
     }
 
-    public static Map<String,String> readUserInfo(Context context) {
-        File file;
-        FileReader fileReader;
+    public static Map<String, String> readUserInfo(Context context) {
         BufferedReader bufferedReader;
-        try{
-            String path = context.getFilesDir().getPath();
-            file = new File(path,"user_info.txt");
-            if(file.exists())
-            {
-                fileReader=new FileReader(file);
-                bufferedReader=new BufferedReader(fileReader);
-                String result=bufferedReader.readLine();
-                String[] results=result.split("##");
-                Map<String ,String> maps =new HashMap<>();
-                maps.put("username",results[0]);
-                maps.put("password",results[1]);
-                bufferedReader.close();
-                fileReader.close();
-                return maps;
-            }
+        FileInputStream inputStream;
+        InputStreamReader inputStreamReader;
+        try {
+            inputStream = context.openFileInput("info.txt");
+            inputStreamReader = new InputStreamReader(inputStream);
+            bufferedReader = new BufferedReader(inputStreamReader);
+            String result = bufferedReader.readLine();
+            String[] results = result.split("##");
+            Map<String, String> maps = new HashMap<>();
+            maps.put("username", results[0]);
+            maps.put("password", results[1]);
+            bufferedReader.close();
+            inputStreamReader.close();
+            inputStream.close();
+            return maps;
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("读取用户信息出错");
+            return null;
         }
-        return null;
     }
 }
