@@ -28,10 +28,12 @@ public class MainActivity extends AppCompatActivity {
         /**
          * 从文件中读取用户信息
          */
-        Map<String, String> user = UserInfoUtils.readUserInfo();
-
-        et_username.setText(user.get("username"));
-        et_password.setText(user.get("password"));
+        Map<String, String> user = UserInfoUtils.readUserInfo(MainActivity.this);
+        if(user!=null)
+        {
+            et_username.setText(user.get("username"));
+            et_password.setText(user.get("password"));
+        }
     }
 
     public void handleLoginButton(View view) {
@@ -47,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (cb_remenber.isChecked()) {
             try {
-                UserInfoUtils.writeUserInfo(et_username.getText().toString(), et_password.getText().toString());
+                UserInfoUtils.writeUserInfo(MainActivity.this,et_username.getText().toString(), et_password.getText().toString());
             } catch (Exception e) {
                 Toast.makeText(MainActivity.this, "记住密码失败", Toast.LENGTH_LONG).show();
             }
