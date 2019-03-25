@@ -1,6 +1,5 @@
 package com.watermelon.login_example;
 
-
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +10,7 @@ import java.util.Map;
 
 public class UserInfoUtils {
 
-    private static String userInfoPath = "/data/data/com.watermelon.login_example/user_info.txt";
+    private static String userInfoPath = "/mnt/sdcard/userInfo.txt";
 
     public static void writeUserInfo(String username, String password) {
 
@@ -25,7 +24,7 @@ public class UserInfoUtils {
             fileOutputStream.write(result.getBytes());
             fileOutputStream.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println(e);
             throw new RuntimeException("写入失败");
         }
     }
@@ -36,6 +35,10 @@ public class UserInfoUtils {
         BufferedReader bufferedReader;
         try{
             file = new File(userInfoPath);
+            if(!file.exists())
+            {
+                return null;
+            }
             fileReader=new FileReader(file);
             bufferedReader=new BufferedReader(fileReader);
             String result=bufferedReader.readLine();
@@ -47,7 +50,7 @@ public class UserInfoUtils {
             fileReader.close();
             return maps;
         }catch (Exception e){
-            e.printStackTrace();
+            System.err.println(e);
             throw new RuntimeException("读取用户信息出错");
         }
     }

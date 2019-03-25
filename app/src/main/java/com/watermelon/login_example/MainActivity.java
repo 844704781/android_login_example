@@ -1,5 +1,9 @@
 package com.watermelon.login_example;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -20,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        requestSDCardPermissions();
 
         et_username = findViewById(R.id.et_username);
         et_password = findViewById(R.id.et_password);
@@ -29,7 +34,10 @@ public class MainActivity extends AppCompatActivity {
          * 从文件中读取用户信息
          */
         Map<String, String> user = UserInfoUtils.readUserInfo();
-
+        if(user ==null)
+        {
+            return ;
+        }
         et_username.setText(user.get("username"));
         et_password.setText(user.get("password"));
     }
@@ -57,5 +65,14 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "不需要记住密码", Toast.LENGTH_LONG).show();
         }
         Toast.makeText(MainActivity.this, "正在进行登录操作", Toast.LENGTH_LONG).show();
+    }
+
+    /**
+     * 申请获取外部存储权限
+     */
+    private void requestSDCardPermissions(){
+        if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+        }
     }
 }
