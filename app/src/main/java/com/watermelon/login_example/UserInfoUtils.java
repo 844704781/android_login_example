@@ -1,5 +1,7 @@
 package com.watermelon.login_example;
 
+import android.os.Environment;
+
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +12,7 @@ import java.util.Map;
 
 public class UserInfoUtils {
 
-    private static String userInfoPath = "/mnt/sdcard/userInfo.txt";
+    private static String userInfoPath = Environment.getExternalStorageDirectory().getPath();
 
     public static void writeUserInfo(String username, String password) {
 
@@ -19,7 +21,7 @@ public class UserInfoUtils {
         try {
             String result = username + "##" + password;
 
-            file = new File(userInfoPath);
+            file = new File(userInfoPath,"info.txt");
             fileOutputStream = new FileOutputStream(file);
             fileOutputStream.write(result.getBytes());
             fileOutputStream.close();
@@ -29,12 +31,16 @@ public class UserInfoUtils {
         }
     }
 
+
+
     public static Map<String,String> readUserInfo() {
+
+
         File file;
         FileReader fileReader;
         BufferedReader bufferedReader;
         try{
-            file = new File(userInfoPath);
+            file = new File(userInfoPath,"info.txt");
             if(!file.exists())
             {
                 return null;

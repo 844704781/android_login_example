@@ -2,6 +2,7 @@ package com.watermelon.login_example;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -54,6 +55,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (cb_remenber.isChecked()) {
+            System.out.println(Environment.MEDIA_MOUNTED);
+            System.out.println(Environment.getExternalStorageState());
+            if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()))
+            {
+                Toast.makeText(MainActivity.this, "SD卡不可用", Toast.LENGTH_LONG).show();
+                return ;
+            }
+
             try {
                 UserInfoUtils.writeUserInfo(et_username.getText().toString(), et_password.getText().toString());
             } catch (Exception e) {
