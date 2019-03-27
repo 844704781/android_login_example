@@ -1,7 +1,9 @@
 package com.watermelon.login_example;
 
 
-import java.io.*;
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,44 +13,39 @@ import java.util.Map;
 
 public class UserInfoUtils {
 
-    private static String userInfoPath = "/data/data/com.watermelon.login_example/user_info.txt";
 
-    public static void writeUserInfo(String username, String password) {
-
-        File file;
-        FileOutputStream fileOutputStream;
-        try {
-            String result = username + "##" + password;
-
-            file = new File(userInfoPath);
-            fileOutputStream = new FileOutputStream(file);
-            fileOutputStream.write(result.getBytes());
-            fileOutputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("写入失败");
-        }
+    public static void writeUserInfo(Context context,String username, String password) {
+        SharedPreferences sp=context.getSharedPreferences("user",context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=sp.edit();
+        editor.putString("username",username);
+        editor.putString("password",password);
+        editor.commit();
     }
 
-    public static Map<String,String> readUserInfo() {
-        File file;
-        FileReader fileReader;
-        BufferedReader bufferedReader;
-        try{
-            file = new File(userInfoPath);
-            fileReader=new FileReader(file);
-            bufferedReader=new BufferedReader(fileReader);
-            String result=bufferedReader.readLine();
-            String[] results=result.split("##");
-            Map<String ,String> maps =new HashMap<>();
-            maps.put("username",results[0]);
-            maps.put("password",results[1]);
-            bufferedReader.close();
-            fileReader.close();
-            return maps;
-        }catch (Exception e){
-            e.printStackTrace();
-            throw new RuntimeException("读取用户信息出错");
+    public static Map<String,String> readUserInfo(Context context) {
+        SharedPreferences sp=context.getSharedPreferences("user",context.MODE_PRIVATE);
+        String username=sp.getString("username",null);
+        String password=sp.getString("password",null);
+
+        if(username==null||"".equals(username))
+        {
+            return null;
         }
+        Map<String,String>map = new HashMap<>();
+        map.put("username",username);
+        map.put("password",password);
+        return map;
+    }
+
+    public static boolean readState(Context context) {
+        SharedPreferences sp=context.getSharedPreferences("user",context.MODE_PRIVATE);
+        return sp.getBoolean("state",false);
+    }
+
+    public static void writeState(Context context, boolean b) {
+        SharedPreferences sp=context.getSharedPreferences("user",context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=sp.edit();
+        editor.putBoolean("state",b);
+        editor.commit();
     }
 }

@@ -28,8 +28,13 @@ public class MainActivity extends AppCompatActivity {
         /**
          * 从文件中读取用户信息
          */
-        Map<String, String> user = UserInfoUtils.readUserInfo();
-
+        Map<String, String> user = UserInfoUtils.readUserInfo(MainActivity.this);
+        boolean state = UserInfoUtils.readState(MainActivity.this);
+        if(!state)
+        {
+            return ;
+        }
+        cb_remenber.setChecked(true);
         et_username.setText(user.get("username"));
         et_password.setText(user.get("password"));
     }
@@ -47,13 +52,16 @@ public class MainActivity extends AppCompatActivity {
 
         if (cb_remenber.isChecked()) {
             try {
-                UserInfoUtils.writeUserInfo(et_username.getText().toString(), et_password.getText().toString());
+                UserInfoUtils.writeUserInfo(MainActivity.this,et_username.getText().toString(), et_password.getText().toString());
+                UserInfoUtils.writeState(MainActivity.this,true);
             } catch (Exception e) {
                 Toast.makeText(MainActivity.this, "记住密码失败", Toast.LENGTH_LONG).show();
             }
             Toast.makeText(MainActivity.this, "记住密码成功", Toast.LENGTH_LONG).show();
 
         } else {
+            UserInfoUtils.writeState(MainActivity.this,false);
+            UserInfoUtils.writeUserInfo(MainActivity.this,null,null);
             Toast.makeText(MainActivity.this, "不需要记住密码", Toast.LENGTH_LONG).show();
         }
         Toast.makeText(MainActivity.this, "正在进行登录操作", Toast.LENGTH_LONG).show();
